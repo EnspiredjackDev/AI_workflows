@@ -3,6 +3,9 @@ from openai.error import OpenAIError
 import json
 import sys
 
+#set the max conversation length so it doesnt go over the token limit (a limit of 20 is 10 messages back and fourth, one for the AI and one for the user.)
+MAX_CONVERSATION_LENGTH = 20
+
 #initial prompt, so the AI knows what it's ment to do
 conversation = [{"role": "user", "content": "As a developer, create bug cards using the info provided. Use technical language. Templates: \"Precondition: \n Steps to reproduce: \n Expected behaviour: \n Actual behaviour: \n\" Acceptance criteria: \"\n [step-by-step]\" Follow templates & keep it clear for devs. Do not have any disclaimers or other text outside the templates. Use markdown to format"}]
 
@@ -59,5 +62,7 @@ while finished == False:
     if extra == "done":
         sys.exit()
     conversation.append({"role": "user", "content": extra})
+    if len(conversation) > MAX_CONVERSATION_LENGTH:
+            conversation = conversation[-MAX_CONVERSATION_LENGTH:]
     GPTapi()
 
